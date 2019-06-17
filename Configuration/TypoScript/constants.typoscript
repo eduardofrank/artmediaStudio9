@@ -9,12 +9,11 @@
 ############
 page {
     logo {
-        file = EXT:artmediastudio9/Resources/Public/Images/logo.svg
-        fileInverted = EXT:artmediastudio9/Resources/Public/Images/logo-inverted.svg
-        height = 52
-        width = 192
-        alt = artmediaStudio9
-        linktitle = artmediaStudio9
+        file = EXT:artmediastudio9/Resources/Public/Images/logo_studio.svg
+        height = 113
+        width = 77
+        alt = Artmedia Studio
+        linktitle = artmediaStudio
     }
     favicon {
         file = EXT:artmediastudio9/Resources/Public/Icons/favicon.ico
@@ -26,6 +25,13 @@ page {
     }
 }
 
+################################
+### BOOTSTRAP SCSS CONSTANTS ###
+################################
+plugin.bootstrap_package.settings.scss {
+	grid-float-breakpoint = 9999px
+	brand-primary = #7c939b
+}
 
 ##################
 ### EXTENSIONS ###
@@ -58,3 +64,15 @@ plugin.bootstrap_package.settings.scss {
     primary = #eb3e4a
     secondary = #013859
 }
+
+################################
+#### ADDED BY EDUARDO FRANK ####
+################################
+plugin.tx_news.view.twb.templateRootPath = EXT:artmediastudio9/Resources/Private/Templates/Styles/Twb/Templates
+plugin.tx_news.view.twb.partialRootPath = EXT:artmediastudio9/Resources/Private/Templates/Styles/Twb/Partials/
+plugin.tx_news.view.twb.layoutRootPath = EXT:artmediastudio9/Resources/Private/Templates/Styles/Twb/Layouts/
+#plugin.tx_news.settings.cssFile = EXT:artmediastudio/Resources/Public/Css/news-basic.css
+page.preloader.enable = 0
+page.theme.meta.enable = 0
+page.theme.socialmedia.enable = 0
+plugin.bootstrap_package.settings.scss.secondary = #98adb4

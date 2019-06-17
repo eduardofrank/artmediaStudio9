@@ -2,14 +2,21 @@
 #### DEPENDENCIES ####
 ######################
 <INCLUDE_TYPOSCRIPT: source="FILE:EXT:bootstrap_package/Configuration/TypoScript/setup.typoscript">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:yoast_news/Configuration/TypoScript/setup.typoscript">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:yoast_news/Configuration/TSconfig/Page.tsconfig">
 
 
 ##############
 #### PAGE ####
 ##############
 page {
+    includeCSSLibs {
+        googlewebfont = https://fonts.googleapis.com/css?family=Exo+2:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i
+    }
+
     includeCSS {
         theme = EXT:artmediastudio9/Resources/Public/Scss/Theme/theme.scss
+        studio_layout = EXT:artmediastudio9/Resources/Public/Css/studio.css
     }
 
     includeJSLibs {
@@ -26,5 +33,101 @@ page {
 
     includeJSFooter {
         artmediastudio9_scripts = EXT:artmediastudio9/Resources/Public/JavaScript/Dist/scripts.js
+        artmedia_scripts = EXT:artmediastudio9/Resources/Public/JavaScript/smallmenu.js
     }
+}
+
+################################
+#### ADDED BY EDUARDO FRANK ####
+################################
+config.admPanel = 0
+config.contentObjectExceptionHandler = 0
+
+#### MENU SWITCH TO GALLERY ###
+lib.myswitch = TEXT
+lib.myswitch.value = 18
+
+lib.switchstyle = TEXT
+lib.switchstyle.value = /typo3conf/ext/artmediastudio9/Resources/Public/Images/gallery_switch.svg
+
+#### SMALL LOGO IN HEADER ###
+lib.sm-logo = TEXT
+lib.sm-logo.value = /typo3conf/ext/artmediastudio9/Resources/Public/Images/studio.svg
+
+#### FORM CONFIGURATION ###
+plugin.tx_form.settings.yamlConfigurations.100 = EXT:artmediastudio9/Configuration/Yaml/FormSetup.yaml
+module.tx_form.settings.yamlConfigurations.100 = EXT:artmediastudio9/Configuration/Yaml/FormSetup.yaml
+
+#### NEWS ####
+plugin.tx_news {
+    settings {
+        overrideFlexformSettingsIfEmpty = cropMaxCharacters,dateField,timeRestriction,orderBy,orderDirection,backPid,listPid,startingpoint,recursive,list.paginate.itemsPerPage    
+        orderBy = datetime
+        orderDirection = desc
+        orderByRespectTopNews = 0
+        orderByAllowed = sorting,author,uid,title,teaser,author,tstamp,crdate,datetime,categories.title  
+        link {
+            skipControllerAndAction = 1
+        }
+    }
+}
+
+# Basic plugin settings
+lib.news = USER
+lib.news {
+                userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+                pluginName = Pi1
+                vendorName = GeorgRinger
+                extensionName = News
+                controller = News
+                settings =< plugin.tx_news.settings
+                persistence =< plugin.tx_news.persistence
+                view =< plugin.tx_news.view
+}
+
+lib.news_list < lib.news
+lib.news_list {
+                action = list
+                switchableControllerActions.News.1 = list
+}
+lib.news_detail < lib.news
+lib.news_detail {
+                action = detail
+                switchableControllerActions.News.1 = detail
+}
+
+[globalVar = GP:tx_news_pi1|news > 0]
+        page.10.marks.content < lib.news_detail
+[else]
+        page.10.marks.content < lib.news_list
+[end]
+
+
+
+plugin.tx_seo.config {
+  xmlSitemap {
+    sitemaps {
+      blog {
+        provider = TYPO3\CMS\Seo\XmlSitemap\RecordsXmlSitemapDataProvider
+        config {
+          table = tx_news_domain_model_news
+          sortField = sorting
+          lastModifiedField = tstamp
+          pid = 90
+          recursive = 2
+          url {
+            pageId = 9
+            fieldToParameterMap {
+              uid = tx_news_pi1[news]
+            }
+            additionalGetParameters {
+              tx_news_pi1.controller = News
+              tx_news_pi1.action = detail
+            }
+            useCacheHash = 1
+          }
+        }
+      }
+    }
+  }
 }
