@@ -72,37 +72,6 @@ plugin.tx_news {
     }
 }
 
-# Basic plugin settings
-lib.news = USER
-lib.news {
-                userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-                pluginName = Pi1
-                vendorName = GeorgRinger
-                extensionName = News
-                controller = News
-                settings =< plugin.tx_news.settings
-                persistence =< plugin.tx_news.persistence
-                view =< plugin.tx_news.view
-}
-
-lib.news_list < lib.news
-lib.news_list {
-                action = list
-                switchableControllerActions.News.1 = list
-}
-lib.news_detail < lib.news
-lib.news_detail {
-                action = detail
-                switchableControllerActions.News.1 = detail
-}
-
-[globalVar = GP:tx_news_pi1|news > 0]
-        page.10.marks.content < lib.news_detail
-[else]
-        page.10.marks.content < lib.news_list
-[end]
-
-
 
 plugin.tx_seo.config {
   xmlSitemap {
@@ -130,4 +99,42 @@ plugin.tx_seo.config {
       }
     }
   }
+}
+
+
+[globalVar = TSFE:id=32]
+     plugin.tx_news.settings.detail.errorHandling = redirectToPage,9,404
+[global]
+
+
+page {
+    10 = FLUIDTEMPLATE
+    10 {
+	dataProcessing {
+                30 {
+                special = rootline
+                special.range = 1|-1
+                includeNotInMenu = 1
+                as = breadcrumb
+                if {
+                    value = {$page.theme.breadcrumb.enableLevel}
+                    value {
+                        insertData = 1
+                        prioriCalc = 1
+                        stdWrap.wrap = |-1
+                    }
+                    isGreaterThan {
+                        data = level
+                    }
+                }
+                dataProcessing {
+                    10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+                    10 {
+                        references.fieldName = nav_icon
+                        as = icon
+                    }
+                }
+            }
+        }
+    }
 }
